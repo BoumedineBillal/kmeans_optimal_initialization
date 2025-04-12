@@ -51,5 +51,4 @@ When using the automatically determined k and centers to initialize K-means:
 - Experiment with different point distributions to see how the filters behave
 
 ## Additional Resources
-- [Core Application Documentation](../README.md)
-- [Installation Guide](../INSTALL.md) (if available)
+- [Edit the `docs/` Folder on GitHub](https://github.com/BoumedineBillal/kmeans_optimal_initialization/edit/master/docs)
