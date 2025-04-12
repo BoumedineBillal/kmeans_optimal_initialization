@@ -1,0 +1,32 @@
+[
+  {
+    "filename": "points_20250412_153127.npy",
+    "optimal_k": 4,
+    "standard_time": 0.11652755737304688,
+    "our_time": 0.009999513626098633,
+    "elbow_path": "C:\\Users\\orani\\bilel\\a_miv\\a_miv\\m1s2\\fd\\rapport2\\version2\\repport\\plots\\points_20250412_153127_elbow.png",
+    "convergence_path": "C:\\Users\\orani\\bilel\\a_miv\\a_miv\\m1s2\\fd\\rapport2\\version2\\repport\\plots\\points_20250412_153127_convergence.png",
+    "cluster_path": "C:\\Users\\orani\\bilel\\a_miv\\a_miv\\m1s2\\fd\\rapport2\\version2\\repport\\plots\\points_20250412_153127_clusters.png",
+    "connections_path": "C:\\Users\\orani\\bilel\\a_miv\\a_miv\\m1s2\\fd\\rapport2\\version2\\repport\\plots\\points_20250412_153127_connections.png"
+  },
+  {
+    "filename": "points_20250412_155155.npy",
+    "optimal_k": 3,
+    "standard_time": 0.13654541969299316,
+    "our_time": 0.013999700546264648,
+    "elbow_path": "C:\\Users\\orani\\bilel\\a_miv\\a_miv\\m1s2\\fd\\rapport2\\version2\\repport\\plots\\points_20250412_155155_elbow.png",
+    "convergence_path": "C:\\Users\\orani\\bilel\\a_miv\\a_miv\\m1s2\\fd\\rapport2\\version2\\repport\\plots\\points_20250412_155155_convergence.png",
+    "cluster_path": "C:\\Users\\orani\\bilel\\a_miv\\a_miv\\m1s2\\fd\\rapport2\\version2\\repport\\plots\\points_20250412_155155_clusters.png",
+    "connections_path": "C:\\Users\\orani\\bilel\\a_miv\\a_miv\\m1s2\\fd\\rapport2\\version2\\repport\\plots\\points_20250412_155155_connections.png"
+  },
+  {
+    "filename": "points_20250412_155238.npy",
+    "optimal_k": 3,
+    "standard_time": 0.11352181434631348,
+    "our_time": 0.009999990463256836,
+    "elbow_path": "C:\\Users\\orani\\bilel\\a_miv\\a_miv\\m1s2\\fd\\rapport2\\version2\\repport\\plots\\points_20250412_155238_elbow.png",
+    "convergence_path": "C:\\Users\\orani\\bilel\\a_miv\\a_miv\\m1s2\\fd\\rapport2\\version2\\repport\\plots\\points_20250412_155238_convergence.png",
+    "cluster_path": "C:\\Users\\orani\\bilel\\a_miv\\a_miv\\m1s2\\fd\\rapport2\\version2\\repport\\plots\\points_20250412_155238_clusters.png",
+    "connections_path": "C:\\Users\\orani\\bilel\\a_miv\\a_miv\\m1s2\\fd\\rapport2\\version2\\repport\\plots\\points_20250412_155238_connections.png"
+  }
+]

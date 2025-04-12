@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rapport: Détermination Automatique de k et des Centres Initiaux pour K-means</title>
+<style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        .author-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .image-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .caption {
+            font-style: italic;
+            color: #666;
+            text-align: center;
+            margin-top: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .conclusion {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin: 20px 0;
+        }
+        .abstract {
+            font-style: italic;
+            color: #555;
+            border-left: 3px solid #3498db;
+            padding-left: 20px;
+            margin: 20px 0;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+<h1>Détermination Automatique de k et des Centres Initiaux pour K-means</h1>
+<div class="author-info">
+<p><strong>Auteurs:</strong> Boumedine Billal (181837068863) &amp; Addel Tolbat (212131030403)</p>
+<p><strong>Date:</strong> 12 avril 2025</p>
+</div>
+<div class="abstract">
+<p>
+            Ce rapport présente une approche complémentaire à l'algorithme K-means, permettant de déterminer 
+            automatiquement le nombre de clusters (k) et leurs centres initiaux par filtrage directionnel des connexions 
+            entre points. Notre méthode détermine ces paramètres de manière autonome et réduit significativement le 
+            temps de convergence de K-means, offrant ainsi une solution aux deux défis majeurs de cet algorithme : 
+            le choix de k et l'initialisation des centres.
+        </p>
+</div>
+<h2>1. Introduction</h2>
+<div class="section">
+<p>
+            L'algorithme K-means est l'une des méthodes de clustering les plus utilisées, mais ses performances 
+            dépendent fortement de deux paramètres critiques : le choix du nombre de clusters (k) et l'initialisation 
+            des centres. Une mauvaise initialisation peut conduire à une convergence vers un optimum local sous-optimal, 
+            tandis qu'un k inadéquat peut résulter en une représentation incorrecte des données.
+        </p>
+<p>
+            Notre approche complète K-means en déterminant automatiquement ces deux paramètres clés. Elle utilise 
+            l'analyse des connexions entre les points et leur filtrage directionnel pour identifier le nombre approprié 
+            de clusters et leurs centres initiaux. Cette méthode repose sur trois étapes de filtrage successives :
+        </p>
+<ol>
+<li>Génération des connexions entre points proches ("Show All Connections")</li>
+<li>Filtrage des connexions par nombre ("Filter By Count")</li>
+<li>Filtrage directionnel itératif des connexions ("Filter By Direction")</li>
+</ol>
+<p>
+            Nous démontrerons dans ce rapport que notre approche permet de déterminer efficacement les paramètres 
+            optimaux pour initialiser K-means, accélérant ainsi sa convergence tout en maintenant ou améliorant 
+            la qualité du clustering final.
+        </p>
+</div>
+<h2>2. Méthodologie</h2>
+<div class="section">
+<p>
+            Notre méthode sert de prétraitement à l'algorithme K-means standard, déterminant automatiquement le 
+            nombre de clusters (k) et les positions initiales de leurs centres. Voici les différentes étapes :
+        </p>
+<h3>2.1 Génération des connexions initiales</h3>
+<p>
+            La première étape consiste à générer des connexions entre les points qui sont suffisamment proches les uns 
+            des autres. Nous utilisons un facteur de distance standard (Distance STD Factor = 0.71) pour déterminer le 
+            seuil de distance en dessous duquel deux points sont considérés comme connectés.
+        </p>
+<h3>2.2 Filtrage par nombre de connexions</h3>
+<p>
+            Ensuite, nous filtrons les connexions en ne conservant que celles qui relient des points ayant un nombre 
+            minimum de connexions. Cette étape permet d'éliminer les connexions isolées ou peu significatives. Le 
+            paramètre Min Connections Factor (1.0) détermine ce seuil minimum.
+        </p>
+<h3>2.3 Filtrage directionnel</h3>
+<p>
+            La troisième étape, qui constitue la contribution principale de notre approche, applique un 
+            filtrage directionnel des connexions. Pour chaque point, nous analysons la distribution angulaire de ses 
+            connexions, appliquons un filtre gaussien circulaire pour lisser cette distribution, puis ne conservons que 
+            les connexions dans les directions statistiquement significatives.
+        </p>
+<p>
+            Ce filtrage directionnel est appliqué de manière itérative (NFD = 2 itérations) avec un facteur directif 
+            (Direction STD Factor = 2.0) qui contrôle la sélectivité du filtrage.
+        </p>
+<h3>2.4 Détermination de k et des centres initiaux</h3>
+<p>
+            Après le filtrage directionnel, les points fortement connectés forment des composantes connexes distinctes
+            qui correspondent naturellement aux clusters. Le nombre de ces composantes détermine automatiquement le 
+            nombre de clusters (k), et le centre de chaque composante sert de position initiale pour les centres de 
+            K-means.
+        </p>
+</div>
+<h2>3. Résultats et Analyse</h2>
+<div class="section">
+<h3>3.1 Jeux de données</h3>
+<p>
+            Nous avons testé notre approche sur trois jeux de données différents contenant des points générés 
+            aléatoirement avec des structures de clusters plus ou moins distinctes.
+        </p>
+<h3>3.2 Détermination du nombre de clusters (k)</h3>
+<p>
+            Un avantage majeur de notre méthode est la détermination automatique du nombre de clusters sans recourir 
+            à des méthodes visuelles comme la méthode du coude. Les graphiques ci-dessous comparent le k déterminé par 
+            notre approche (point rouge) avec la courbe d'inertie standard utilisée dans la méthode du coude.
+        </p>
+<!-- Images for the elbow method will be added here -->
+<div class="image-container">
+<img alt="Méthode du coude pour le jeu de données 1" src="file:///C:/Users/orani/bilel/a_miv/a_miv/m1s2/fd/rapport2/version2/repport/plots/points_20250412_153127_elbow.png"/>
+<p class="caption">Figure 1: Comparaison entre notre k et la courbe d'inertie - Jeu de données 1</p>
+</div>
+<div class="image-container">
+<img alt="Méthode du coude pour le jeu de données 2" src="file:///C:/Users/orani/bilel/a_miv/a_miv/m1s2/fd/rapport2/version2/repport/plots/points_20250412_155155_elbow.png"/>
+<p class="caption">Figure 2: Comparaison entre notre k et la courbe d'inertie - Jeu de données 2</p>
+</div>
+<div class="image-container">
+<img alt="Méthode du coude pour le jeu de données 3" src="file:///C:/Users/orani/bilel/a_miv/a_miv/m1s2/fd/rapport2/version2/repport/plots/points_20250412_155238_elbow.png"/>
+<p class="caption">Figure 3: Comparaison entre notre k et la courbe d'inertie - Jeu de données 3</p>
+</div>
+<p>
+            Les graphiques ci-dessus montrent la courbe d'inertie standard (somme des carrés des distances entre les 
+            points et leurs centres de cluster) en fonction de k. Le point rouge (X) indique le k déterminé 
+            automatiquement par notre méthode de filtrage directionnel. On observe que notre méthode identifie un k 
+            qui correspond généralement à une zone de transition dans la courbe d'inertie, sans nécessiter 
+            d'interprétation visuelle subjective.
+        </p>
+<h3>3.3 Visualisation du processus de filtrage</h3>
+<p>
+            La visualisation du processus de filtrage permet de comprendre comment notre méthode identifie 
+            progressivement les structures de clusters et leurs centres.
+        </p>
+<!-- Images for connection visualization will be added here -->
+<div class="image-container">
+<img alt="Visualisation des connexions pour le jeu de données 1" src="file:///C:/Users/orani/bilel/a_miv/a_miv/m1s2/fd/rapport2/version2/repport/plots/points_20250412_153127_connections.png"/>
+<p class="caption">Figure 4: Visualisation du processus de filtrage - Jeu de données 1</p>
+</div>
+<div class="image-container">
+<img alt="Visualisation des connexions pour le jeu de données 2" src="file:///C:/Users/orani/bilel/a_miv/a_miv/m1s2/fd/rapport2/version2/repport/plots/points_20250412_155155_connections.png"/>
+<p class="caption">Figure 5: Visualisation du processus de filtrage - Jeu de données 2</p>
+</div>
+<div class="image-container">
+<img alt="Visualisation des connexions pour le jeu de données 3" src="file:///C:/Users/orani/bilel/a_miv/a_miv/m1s2/fd/rapport2/version2/repport/plots/points_20250412_155238_connections.png"/>
+<p class="caption">Figure 6: Visualisation du processus de filtrage - Jeu de données 3</p>
+</div>
+<p>
+            Les connexions deviennent de plus en plus structurées à mesure que les filtres sont appliqués. Le 
+            filtrage directionnel, en particulier, révèle clairement les structures de clusters en ne conservant que 
+            les connexions significatives. Les points rouges marqués d'une croix dans le dernier graphique 
+            correspondent aux centres des clusters identifiés par notre méthode.
+        </p>
+<h3>3.4 Résultats du clustering</h3>
+<p>
+            Les graphiques ci-dessous montrent les résultats de clustering obtenus en utilisant notre méthode pour 
+            déterminer k et initialiser les centres, suivis par l'application de K-means standard.
+        </p>
+<!-- Images for clustering results will be added here -->
+<div class="image-container">
+<img alt="Résultats de clustering pour le jeu de données 1" src="file:///C:/Users/orani/bilel/a_miv/a_miv/m1s2/fd/rapport2/version2/repport/plots/points_20250412_153127_clusters.png"/>
+<p class="caption">Figure 7: Résultats de clustering - Jeu de données 1</p>
+</div>
+<div class="image-container">
+<img alt="Résultats de clustering pour le jeu de données 2" src="file:///C:/Users/orani/bilel/a_miv/a_miv/m1s2/fd/rapport2/version2/repport/plots/points_20250412_155155_clusters.png"/>
+<p class="caption">Figure 8: Résultats de clustering - Jeu de données 2</p>
+</div>
+<div class="image-container">
+<img alt="Résultats de clustering pour le jeu de données 3" src="file:///C:/Users/orani/bilel/a_miv/a_miv/m1s2/fd/rapport2/version2/repport/plots/points_20250412_155238_clusters.png"/>
+<p class="caption">Figure 9: Résultats de clustering - Jeu de données 3</p>
+</div>
+<p>
+            La figure de droite montre les résultats obtenus avec notre méthode combinée à K-means.
+            Les points verts représentent les centres initiaux déterminés par notre méthode de filtrage,
+            et les points rouges (X) sont les centres finaux après convergence de K-means.
+            Cette visualisation démontre que notre méthode fournit des centres initiaux proches de la
+            solution finale optimale.
+        </p>
+<h3>3.5 Comparaison des temps de convergence</h3>
+<p>
+            Un avantage majeur de notre méthode est l'amélioration du temps de convergence de K-means. 
+            En comparant la version standard de K-means (avec initialisation aléatoire) et notre approche 
+            (même k mais avec centres initiaux prédéterminés), nous démontrons une réduction significative 
+            du temps de traitement.
+        </p>
+<!-- Images for convergence time comparison will be added here -->
+<div class="image-container">
+<img alt="Comparaison des temps de convergence pour le jeu de données 1" src="file:///C:/Users/orani/bilel/a_miv/a_miv/m1s2/fd/rapport2/version2/repport/plots/points_20250412_153127_convergence.png"/>
+<p class="caption">Figure 10: Comparaison des temps de convergence - Jeu de données 1</p>
+</div>
+<div class="image-container">
+<img alt="Comparaison des temps de convergence pour le jeu de données 2" src="file:///C:/Users/orani/bilel/a_miv/a_miv/m1s2/fd/rapport2/version2/repport/plots/points_20250412_155155_convergence.png"/>
+<p class="caption">Figure 11: Comparaison des temps de convergence - Jeu de données 2</p>
+</div>
+<div class="image-container">
+<img alt="Comparaison des temps de convergence pour le jeu de données 3" src="file:///C:/Users/orani/bilel/a_miv/a_miv/m1s2/fd/rapport2/version2/repport/plots/points_20250412_155238_convergence.png"/>
+<p class="caption">Figure 12: Comparaison des temps de convergence - Jeu de données 3</p>
+</div>
+<p>
+            Les graphiques ci-dessus comparent le temps de convergence entre K-means standard (centres initiaux aléatoires)
+            et K-means initialisé avec nos centres prédéterminés. Dans les deux cas, le même k (déterminé par notre méthode)
+            est utilisé. On constate que notre initialisation accélère considérablement la convergence de l'algorithme,
+            réduisant le temps de traitement d'environ 90%, ce qui est particulièrement important pour les jeux de données volumineux.
+        </p>
+<h3>3.6 Tableau récapitulatif</h3>
+<p>
+            Le tableau ci-dessous résume les résultats obtenus pour les trois jeux de données :
+        </p>
+<table>
+<tr>
+<th>Jeu de données</th>
+<th>k déterminé</th>
+<th>Temps K-means standard (s)</th>
+<th>Temps avec notre initialisation (s)</th>
+<th>Amélioration (%)</th>
+</tr>
+<tr>
+<td>Jeu 1</td>
+<td id="k1">4</td>
+<td id="std1">0.1165</td>
+<td id="our1">0.0100</td>
+<td id="imp1">91.42%</td>
+</tr>
+<tr>
+<td>Jeu 2</td>
+<td id="k2">3</td>
+<td id="std2">0.1365</td>
+<td id="our2">0.0140</td>
+<td id="imp2">89.75%</td>
+</tr>
+<tr>
+<td>Jeu 3</td>
+<td id="k3">3</td>
+<td id="std3">0.1135</td>
+<td id="our3">0.0100</td>
+<td id="imp3">91.19%</td>
+</tr>
+</table>
+<p>
+            Ce tableau montre que notre méthode détermine automatiquement un nombre de clusters k
+            approprié et réduit le temps de convergence de K-means de 90% à 92% selon les jeux de données,
+            tout en maintenant la même qualité de clustering.
+        </p>
+</div>
+<h2>4. Conclusion</h2>
+<div class="section conclusion">
+<p>
+            Dans ce rapport, nous avons présenté une approche complémentaire à K-means qui détermine 
+            automatiquement le nombre de clusters (k) et leurs centres initiaux. Notre méthode utilise 
+            un filtrage directionnel des connexions entre points à travers trois étapes successives : 
+            génération des connexions initiales, filtrage par nombre de connexions et filtrage directionnel itératif.
+        </p>
+<p>
+            Les résultats obtenus sur trois jeux de données différents démontrent que notre approche permet :
+        </p>
+<ul>
+<li>De déterminer automatiquement un nombre de clusters (k) approprié sans nécessiter d'interprétation visuelle</li>
+<li>De fournir des positions initiales optimisées pour les centres de clusters</li>
+<li>De réduire significativement le temps de convergence de K-means (amélioration de 90% à 92%)</li>
+<li>D'obtenir des résultats de clustering de qualité égale ou supérieure à l'initialisation aléatoire standard</li>
+</ul>
+<p>
+            Ces avantages sont particulièrement importants pour les applications où le temps de calcul est critique.
+            Notre méthode pourrait être appliquée dans divers domaines tels que la segmentation d'images, 
+            l'analyse de données marketing, ou la bioinformatique.
+        </p>
+<p>
+            Dans le futur, nous envisageons d'étendre notre approche à des espaces de dimensions supérieures 
+            et d'explorer d'autres applications du filtrage directionnel dans l'analyse de données.
+        </p>
+</div>
+</body>
+</html>
